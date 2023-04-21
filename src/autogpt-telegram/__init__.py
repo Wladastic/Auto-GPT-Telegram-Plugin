@@ -1,10 +1,16 @@
 """Telegram controller bot integration using python-telegram-bot."""
 import abc
-from typing import Any, Dict, List, Optional, Tuple, TypeVar, TypedDict
+import os
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, TypedDict, TypeVar
 
-from abstract_singleton import AbstractSingleton, Singleton
+from auto_gpt_plugin_template import AutoGPTPluginTemplate
+from dotenv import load_dotenv
 
 PromptGenerator = TypeVar("PromptGenerator")
+
+with open(str(Path(os.getcwd()) / ".env"), 'r') as fp:
+    load_dotenv(stream=fp)
 
 
 class Message(TypedDict):
@@ -12,7 +18,7 @@ class Message(TypedDict):
     content: str
 
 
-class AutoGPTPluginTemplate(AbstractSingleton, metaclass=Singleton):
+class AutoGPTPluginTemplate(AutoGPTPluginTemplate):
     """
     Telegram controller bot integration using python-telegram-bot.
     """
@@ -21,7 +27,9 @@ class AutoGPTPluginTemplate(AbstractSingleton, metaclass=Singleton):
         super().__init__()
         self._name = "Auto-GPT-Plugin-Template"
         self._version = "0.1.0"
-        self._description = "This is a template for Auto-GPT plugins."
+        self._description = "This integrates a Telegram chat bot with your autogpt instance."
+        self.telegram_api_key = os.getenv("TELEGRAM_API_KEY")
+        self.telegram_chat_id = os.getenv("TELEGRAM_CHAT_ID")
 
     @abc.abstractmethod
     def can_handle_on_response(self) -> bool:
@@ -44,13 +52,8 @@ class AutoGPTPluginTemplate(AbstractSingleton, metaclass=Singleton):
 
         Returns:
             bool: True if the plugin can handle the post_prompt method."""
-        return False
-
-    @abc.abstractmethod
-    def post_prompt(self, prompt: PromptGenerator) -> PromptGenerator:
-        """This method is called just after the generate_prompt is called,
-            but actually before the prompt is generated.
-
+        return True
+        """
         Args:
             prompt (PromptGenerator): The prompt generator.
 
@@ -212,7 +215,11 @@ class AutoGPTPluginTemplate(AbstractSingleton, metaclass=Singleton):
 
     @abc.abstractmethod
     def can_handle_chat_completion(
-        self, messages: Dict[Any, Any], model: str, temperature: float, max_tokens: int
+        self,
+        messages: list[Dict[Any, Any]],
+        model: str,
+        temperature: float,
+        max_tokens: int,
     ) -> bool:
         """This method is called to check that the plugin can
           handle the chat_completion method.
@@ -222,9 +229,8 @@ class AutoGPTPluginTemplate(AbstractSingleton, metaclass=Singleton):
             model (str): The model name.
             temperature (float): The temperature.
             max_tokens (int): The max tokens.
-
-          Returns:
-              bool: True if the plugin can handle the chat_completion method."""
+        Returns:
+            bool: True if the plugin can handle the chat_completion method."""
         return False
 
     @abc.abstractmethod
@@ -241,5 +247,15 @@ class AutoGPTPluginTemplate(AbstractSingleton, metaclass=Singleton):
 
         Returns:
             str: The resulting response.
+        """
+        return None
+
+    def post_prompt(self, prompt: PromptGenerator) -> PromptGenerator:
+        """This method is called just after the generate_prompt is called,
+            but actually before the prompt is generated.
+        Args:
+            prompt (PromptGenerator): The prompt generator.
+        Returns:
+            PromptGenerator: The prompt generator.
         """
         pass

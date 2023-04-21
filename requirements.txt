@@ -7,3 +7,7 @@ wheel
 setuptools
 build
 twine
+SpeechRecognition
+python-telegram-bot
+auto_gpt_plugin_template
+python-dotenv
