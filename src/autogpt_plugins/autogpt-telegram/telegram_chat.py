@@ -1,21 +1,19 @@
 import asyncio
 
-try:
-    from autogpt.config.config import Config
-except ModuleNotFoundError:
-    from config import Config
-
 import traceback
 
 from telegram import Bot, Update
 from telegram.ext import CallbackContext
 
-cfg = Config()
+from . import AutoGPTTelegram
+
+plugin = AutoGPTTelegram()
+
 response_queue = ""
 
 
 def is_authorized_user(update: Update):
-    return update.effective_user.id == int(cfg.telegram_chat_id)
+    return update.effective_user.id == int(plugin.telegram_chat_id)
 
 
 def handle_response(update: Update, context: CallbackContext):
@@ -56,7 +54,7 @@ class TelegramUtils:
 
     @staticmethod
     async def get_bot():
-        bot_token = cfg.telegram_api_key
+        bot_token = plugin.telegram_api_key
         bot = Bot(token=bot_token)
         commands = await bot.get_my_commands()
         if len(commands) == 0:
@@ -91,7 +89,7 @@ class TelegramUtils:
     def send_voice(voice_file):
         try:
             TelegramUtils.get_bot().send_voice(
-                chat_id=cfg.telegram_chat_id, voice=open(voice_file, "rb")
+                chat_id=plugin.telegram_chat_id, voice=open(voice_file, "rb")
             )
         except RuntimeError:
             print("Error while sending voice message")
@@ -99,7 +97,7 @@ class TelegramUtils:
     @staticmethod
     async def _send_message(message):
         print("Sending message to Telegram.. ")
-        recipient_chat_id = cfg.telegram_chat_id
+        recipient_chat_id = plugin.telegram_chat_id
         bot = await TelegramUtils.get_bot()
         await bot.send_message(chat_id=recipient_chat_id, text=message)
 

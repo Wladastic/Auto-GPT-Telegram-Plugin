@@ -18,7 +18,7 @@ class Message(TypedDict):
     content: str
 
 
-class AutoGPTPluginTemplate(AutoGPTPluginTemplate):
+class AutoGPTTelegram(AutoGPTPluginTemplate):
     """
     Telegram controller bot integration using python-telegram-bot.
     """
@@ -259,3 +259,35 @@ class AutoGPTPluginTemplate(AutoGPTPluginTemplate):
             PromptGenerator: The prompt generator.
         """
         pass
+
+    def can_handle_user_input(self, user_input: str) -> bool:
+        """This method is called to check that the plugin can
+        handle the user_input method.
+
+        Args:
+            user_input (str): The user input.
+
+        Returns:
+            bool: True if the plugin can handle the user_input method."""
+        return True
+
+    def user_input(self, user_input: str) -> str:
+        from .telegram_chat import TelegramUtils
+        telegramUtils = TelegramUtils()
+        return telegramUtils.ask_user(user_input)
+
+    def can_handle_report(self) -> bool:
+        """This method is called to check that the plugin can
+        handle the report method.
+
+        Returns:
+            bool: True if the plugin can handle the report method."""
+        return False
+
+    def report(self) -> str:
+        """This method is called when the report is done.
+
+        Returns:
+            str: The resulting response.
+        """
+        return None
