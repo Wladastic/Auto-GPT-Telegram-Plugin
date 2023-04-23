@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, Tuple, TypedDict, TypeVar
 from auto_gpt_plugin_template import AutoGPTPluginTemplate
 from dotenv import load_dotenv
 
-from .telegram_plugin.telegram_chat import TelegramUtils
+from .telegram_chat import TelegramUtils
 
 PromptGenerator = TypeVar("PromptGenerator")
 
@@ -32,6 +32,7 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
         self._description = "This integrates a Telegram chat bot with your autogpt instance."
         self.telegram_api_key = os.getenv("TELEGRAM_API_KEY")
         self.telegram_chat_id = os.getenv("TELEGRAM_CHAT_ID")
+        self.telegram_utils = TelegramUtils(chat_id=self.telegram_chat_id, api_key=self.telegram_api_key)
 
     @abc.abstractmethod
     def can_handle_on_response(self) -> bool:
@@ -54,8 +55,13 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
 
         Returns:
             bool: True if the plugin can handle the post_prompt method."""
-        return True
-        """
+        return False
+
+    @abc.abstractmethod
+    def post_prompt(self, prompt: PromptGenerator) -> PromptGenerator:
+        """This method is called just after the generate_prompt is called,
+            but actually before the prompt is generated.
+
         Args:
             prompt (PromptGenerator): The prompt generator.
 
@@ -217,11 +223,7 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
 
     @abc.abstractmethod
     def can_handle_chat_completion(
-        self,
-        messages: list[Dict[Any, Any]],
-        model: str,
-        temperature: float,
-        max_tokens: int,
+        self, messages: Dict[Any, Any], model: str, temperature: float, max_tokens: int
     ) -> bool:
         """This method is called to check that the plugin can
           handle the chat_completion method.
@@ -231,8 +233,9 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
             model (str): The model name.
             temperature (float): The temperature.
             max_tokens (int): The max tokens.
-        Returns:
-            bool: True if the plugin can handle the chat_completion method."""
+
+          Returns:
+              bool: True if the plugin can handle the chat_completion method."""
         return False
 
     @abc.abstractmethod
@@ -250,18 +253,9 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
         Returns:
             str: The resulting response.
         """
-        return None
-
-    def post_prompt(self, prompt: PromptGenerator) -> PromptGenerator:
-        """This method is called just after the generate_prompt is called,
-            but actually before the prompt is generated.
-        Args:
-            prompt (PromptGenerator): The prompt generator.
-        Returns:
-            PromptGenerator: The prompt generator.
-        """
         pass
 
+    @abc.abstractmethod
     def can_handle_user_input(self, user_input: str) -> bool:
         """This method is called to check that the plugin can
         handle the user_input method.
@@ -273,10 +267,11 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
             bool: True if the plugin can handle the user_input method."""
         return True
 
+    @abc.abstractmethod
     def user_input(self, user_input: str) -> str:
-        telegramUtils = TelegramUtils()
-        return telegramUtils.ask_user(user_input)
+        return self.telegram_utils.ask_user(user_input)
 
+    @abc.abstractmethod
     def can_handle_report(self) -> bool:
         """This method is called to check that the plugin can
         handle the report method.
@@ -285,6 +280,6 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
             bool: True if the plugin can handle the report method."""
         return True
 
+    @abc.abstractmethod
     def report(self, message: str) -> None:
-        telegramUtils = TelegramUtils()
-        telegramUtils.send_message(message)
+        self.telegram_utils.send_message(message)

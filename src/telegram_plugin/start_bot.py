@@ -7,14 +7,9 @@ from threading import Lock, Semaphore
 from telegram import Update
 from telegram.ext import Application, CallbackContext, CommandHandler
 
-try:
-    from autogpt.config.config import Config
-    from autogpt.telegram_chat import TelegramUtils, is_authorized_user
-except ModuleNotFoundError:
-    from config import Config
-    from telegram_chat import TelegramUtils, is_authorized_user
+from .telegram_chat import TelegramUtils, is_authorized_user
+from . import AutoGPTTelegram as cfg
 
-cfg = Config()
 
 main_started = False
 

@@ -5,31 +5,31 @@ import traceback
 from telegram import Bot, Update
 from telegram.ext import CallbackContext
 
-from . import AutoGPTTelegram
-
-plugin = AutoGPTTelegram()
-
 response_queue = ""
 
 
-def is_authorized_user(update: Update):
-    return update.effective_user.id == int(plugin.telegram_chat_id)
+class TelegramUtils():
+    def __init__(self, api_key: str = None, chat_id: str = None):
+        self.api_key = api_key
+        self.chat_id = chat_id
 
-
-def handle_response(update: Update, context: CallbackContext):
-    try:
-        print("Received response: " + update.message.text)
-
-        if is_authorized_user(update):
-            response_queue.put(update.message.text)
-    except Exception as e:
-        print(e)
-
-
-class TelegramUtils:
     @staticmethod
-    async def delete_old_messages():
-        bot = await TelegramUtils().get_bot()
+    def is_authorized_user(self, update: Update):
+        return update.effective_user.id == int(self.chat_id)
+
+    @staticmethod
+    def handle_response(self, update: Update, context: CallbackContext):
+        try:
+            print("Received response: " + update.message.text)
+
+            if self.is_authorized_user(update):
+                response_queue.put(update.message.text)
+        except Exception as e:
+            print(e)
+
+    @staticmethod
+    async def delete_old_messages(self):
+        bot = await self.get_bot()
         updates = await bot.get_updates(offset=0)
         count = 0
         for update in updates:
@@ -53,12 +53,12 @@ class TelegramUtils:
             print("Cleaned up old messages.")
 
     @staticmethod
-    async def get_bot():
-        bot_token = plugin.telegram_api_key
+    async def get_bot(self):
+        bot_token = self.api_key
         bot = Bot(token=bot_token)
         commands = await bot.get_my_commands()
         if len(commands) == 0:
-            await TelegramUtils.set_commands(bot)
+            await self.set_commands(bot)
         commands = await bot.get_my_commands()
         return bot
 
@@ -86,18 +86,18 @@ class TelegramUtils:
             asyncio.run(TelegramUtils._send_message(message))
 
     @staticmethod
-    def send_voice(voice_file):
+    def send_voice(self, voice_file):
         try:
             TelegramUtils.get_bot().send_voice(
-                chat_id=plugin.telegram_chat_id, voice=open(voice_file, "rb")
+                chat_id=self.telegram_chat_id, voice=open(voice_file, "rb")
             )
         except RuntimeError:
             print("Error while sending voice message")
 
     @staticmethod
-    async def _send_message(message):
+    async def _send_message(self, message):
         print("Sending message to Telegram.. ")
-        recipient_chat_id = plugin.telegram_chat_id
+        recipient_chat_id = self.telegram_chat_id
         bot = await TelegramUtils.get_bot()
         await bot.send_message(chat_id=recipient_chat_id, text=message)
 
@@ -152,7 +152,7 @@ class TelegramUtils:
         return response_text
 
     @staticmethod
-    async def _poll_updates():
+    async def _poll_updates(self):
         global response_queue
         bot = await TelegramUtils.get_bot()
 
@@ -165,7 +165,7 @@ class TelegramUtils:
                 updates = await bot.get_updates(offset=last_update_id + 1, timeout=30)
                 for update in updates:
                     if update.message and update.message.text:
-                        if is_authorized_user(update):
+                        if self.is_authorized_user(update):
                             response_queue = update.message.text
                             return
                     last_update_id = max(last_update_id, update.update_id)
@@ -175,12 +175,12 @@ class TelegramUtils:
             await asyncio.sleep(1)
 
     @staticmethod
-    def ask_user(prompt):
+    def ask_user(self, prompt):
         try:
             loop = asyncio.get_running_loop()
         except RuntimeError:  # 'RuntimeError: There is no current event loop...'
             loop = None
         if loop and loop.is_running():
-            return loop.create_task(TelegramUtils.ask_user_async(prompt))
+            return loop.create_task(self.ask_user_async(prompt))
         else:
-            return asyncio.run(TelegramUtils.ask_user_async(prompt))
+            return asyncio.run(self.ask_user_async(prompt))
