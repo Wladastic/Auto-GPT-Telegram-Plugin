@@ -1,5 +1,4 @@
 import asyncio
-
 import traceback
 
 from telegram import Bot, Update

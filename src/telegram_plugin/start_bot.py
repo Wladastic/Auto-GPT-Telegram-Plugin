@@ -7,9 +7,8 @@ from threading import Lock, Semaphore
 from telegram import Update
 from telegram.ext import Application, CallbackContext, CommandHandler
 
-from .telegram_chat import TelegramUtils, is_authorized_user
 from . import AutoGPTTelegram as cfg
-
+from .telegram_chat import TelegramUtils, is_authorized_user
 
 main_started = False
 
