@@ -13,9 +13,10 @@ First setup a telegram bot by following the instructions here: https://core.tele
 
 Then set the following variables in your .env:
 
-TELEGRAM_ENABLED=True
+CHAT_MESSAGES_ENABLED=True
 TELEGRAM_API_KEY=your-telegram-bot-token
 TELEGRAM_CHAT_ID=your-telegram-bot-chat-id
+
 to obtain your chat id, send a message to your bot and then use the following command:
 
 curl https://api.telegram.org/bot<your-telegram-bot-token>/getUpdates
