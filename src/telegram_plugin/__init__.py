@@ -26,7 +26,7 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
 
     def __init__(self):
         super().__init__()
-        self._name = "Auto-GPT-Plugin-Template"
+        self._name = "Auto-GPT-Telegram"
         self._version = "0.1.0"
         self._description = "This integrates a Telegram chat bot with your autogpt instance."
         self.telegram_api_key = os.getenv("TELEGRAM_API_KEY")
@@ -246,7 +246,7 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
         return True
 
     def user_input(self, user_input: str) -> str:
-        return self.telegram_utils.ask_user(user_input)
+        return self.telegram_utils.ask_user(self.telegram_utils, prompt=user_input)
 
     def can_handle_report(self) -> bool:
         """This method is called to check that the plugin can
@@ -257,4 +257,4 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
         return True
 
     def report(self, message: str) -> None:
-        self.telegram_utils.send_message(message)
+        self.telegram_utils.send_message(self.telegram_utils, message=message)

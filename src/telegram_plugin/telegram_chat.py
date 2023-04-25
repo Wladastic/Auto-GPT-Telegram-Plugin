@@ -21,7 +21,7 @@ class TelegramUtils():
         try:
             print("Received response: " + update.message.text)
 
-            if self.is_authorized_user(update):
+            if self.is_authorized_user(self, update):
                 response_queue.put(update.message.text)
         except Exception as e:
             print(e)
@@ -74,21 +74,21 @@ class TelegramUtils():
         )
 
     @staticmethod
-    def send_message(message):
+    def send_message(self, message):
         try:
             loop = asyncio.get_running_loop()
         except RuntimeError:  # 'RuntimeError: There is no current event loop...'
             loop = None
         if loop and loop.is_running():
-            loop.create_task(TelegramUtils._send_message(message))
+            loop.create_task(self._send_message(self, message=message))
         else:
-            asyncio.run(TelegramUtils._send_message(message))
+            asyncio.run(self._send_message(self, message=message))
 
     @staticmethod
     def send_voice(self, voice_file):
         try:
-            TelegramUtils.get_bot().send_voice(
-                chat_id=self.telegram_chat_id, voice=open(voice_file, "rb")
+            self.get_bot().send_voice(
+                chat_id=self.chat_id, voice=open(voice_file, "rb")
             )
         except RuntimeError:
             print("Error while sending voice message")
@@ -96,12 +96,12 @@ class TelegramUtils():
     @staticmethod
     async def _send_message(self, message):
         print("Sending message to Telegram.. ")
-        recipient_chat_id = self.telegram_chat_id
-        bot = await TelegramUtils.get_bot()
+        recipient_chat_id = self.chat_id
+        bot = await self.get_bot(self)
         await bot.send_message(chat_id=recipient_chat_id, text=message)
 
     @staticmethod
-    async def ask_user_async(prompt):
+    async def ask_user_async(self, prompt):
         global response_queue
         question = prompt + " (reply to this message) \n Confirm: /yes     Decline: /no"
 
@@ -109,22 +109,24 @@ class TelegramUtils():
         # await delete_old_messages()
 
         print("Asking user: " + question)
-        TelegramUtils.send_message(question)
+        self.send_message(self, message=question)
 
         print("Waiting for response on Telegram chat...")
-        await TelegramUtils._poll_updates()
+        await self._poll_updates(self)
 
         if response_queue == "/start":
-            response_queue = await TelegramUtils.ask_user(
-                "I am already here... \n Please use /stop to stop me first."
+            response_queue = await self.ask_user(
+                self,
+                prompt="I am already here... \n Please use /stop to stop me first."
             )
         if response_queue == "/help":
-            response_queue = await TelegramUtils.ask_user(
-                "You can use /stop to stop me \n and /start to start me again."
+            response_queue = await self.ask_user(
+                self,
+                prompt="You can use /stop to stop me \n and /start to start me again."
             )
 
         if response_queue == "/stop":
-            TelegramUtils.send_message("Stopping Auto-GPT now!")
+            self.send_message(self, "Stopping Auto-GPT now!")
             exit(0)
         elif response_queue == "/yes":
             response_text = "yes"
@@ -153,7 +155,7 @@ class TelegramUtils():
     @staticmethod
     async def _poll_updates(self):
         global response_queue
-        bot = await TelegramUtils.get_bot()
+        bot = await self.get_bot(self)
 
         last_update = await bot.get_updates(timeout=30)
         last_update_id = last_update[-1].update_id
@@ -164,7 +166,7 @@ class TelegramUtils():
                 updates = await bot.get_updates(offset=last_update_id + 1, timeout=30)
                 for update in updates:
                     if update.message and update.message.text:
-                        if self.is_authorized_user(update):
+                        if self.is_authorized_user(self, update):
                             response_queue = update.message.text
                             return
                     last_update_id = max(last_update_id, update.update_id)
@@ -175,11 +177,12 @@ class TelegramUtils():
 
     @staticmethod
     def ask_user(self, prompt):
+        print("Asking user: " + prompt)
         try:
             loop = asyncio.get_running_loop()
         except RuntimeError:  # 'RuntimeError: There is no current event loop...'
             loop = None
         if loop and loop.is_running():
-            return loop.create_task(self.ask_user_async(prompt))
+            return loop.create_task(self.ask_user_async(self, prompt=prompt))
         else:
-            return asyncio.run(self.ask_user_async(prompt))
+            return asyncio.run(self.ask_user_async(self, prompt=prompt))
