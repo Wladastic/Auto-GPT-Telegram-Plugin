@@ -158,7 +158,10 @@ class TelegramUtils():
         bot = await self.get_bot(self)
 
         last_update = await bot.get_updates(timeout=30)
-        last_update_id = last_update[-1].update_id
+        if len(last_update) > 0:
+            last_update_id = last_update[-1].update_id
+        else:
+            last_update_id = 0
 
         while True:
             try:
