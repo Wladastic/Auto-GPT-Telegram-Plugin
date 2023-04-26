@@ -1,5 +1,12 @@
 ## Telegram Plugin for Auto-GPT
 
+Disclaimer:
+Please wait until this PR is merged: https://github.com/Significant-Gravitas/Auto-GPT/pull/2929
+Otherwise the plugin cannot work.
+I think it should be finished until 27th of April 2023
+
+
+
 A smoothly working Telegram bot that gives you all the messages you would normally get through the Terminal.
 Making Auto-GPT a more user-friendly application to interact with.
 
