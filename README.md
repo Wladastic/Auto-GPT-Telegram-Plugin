@@ -4,8 +4,9 @@ A smoothly working Telegram bot that gives you all the messages you would normal
 Making Auto-GPT a more user-friendly application to interact with.
 
 
-![image](https://user-images.githubusercontent.com/11997278/233675629-fb582ab6-f89f-4837-82c4-c21744427266.png)
-![image](https://user-images.githubusercontent.com/11997278/233675683-eea9dd74-1c5e-436a-b745-95dff17c4951.png)
+![image](https://user-images.githubusercontent.com/11997278/233675629-fb582ab6-f89f-4837-82c4-c21744427266.png | width=100)
+![image](https://user-images.githubusercontent.com/11997278/233675683-eea9dd74-1c5e-436a-b745-95dff17c4951.png | width=100)
+
 
 
 ## SETUP
