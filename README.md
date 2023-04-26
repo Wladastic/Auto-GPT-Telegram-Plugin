@@ -1,9 +1,13 @@
 ## Telegram Plugin for Auto-GPT
 
-Disclaimer:
+#Disclaimer:
 Please wait until this PR is merged: https://github.com/Significant-Gravitas/Auto-GPT/pull/2929
 Otherwise the plugin cannot work.
 I think it should be finished until 27th of April 2023
+
+If you still have any questions, feel free to ask here: https://github.com/Wladastic/Auto-GPT-Telegram-Plugin/issues/1
+
+As much as I appreciate it, please refrain from contacting me directly, as I do not have much time, thank you! :)
 
 
 
