@@ -1,7 +1,7 @@
 # Disclaimer:
 Please wait until this PR is merged: https://github.com/Significant-Gravitas/Auto-GPT/pull/2929
 Otherwise the plugin cannot work.
-I think it should be finished until 27th of April 2023
+I think it should be finished until 27th of April 2023, until then feel free to test using my branch: chat_plugin_capability
 
 If you still have any questions, feel free to ask here: https://github.com/Wladastic/Auto-GPT-Telegram-Plugin/issues/1
 
