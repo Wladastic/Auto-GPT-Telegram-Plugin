@@ -8,13 +8,14 @@ Making Auto-GPT a more user-friendly application to interact with.
 First setup a telegram bot by following the instructions here: https://core.telegram.org/bots#6-botfather
 
 Then set the following variables in your .env:
-
-CHAT_MESSAGES_ENABLED=True
+```
 TELEGRAM_API_KEY=your-telegram-bot-token
 TELEGRAM_CHAT_ID=your-telegram-bot-chat-id
 
 ALLOWLISTED_PLUGINS=AutoGPTTelegram
 CHAT_MESSAGES_ENABLED=True
+
+````
 within your .env file.
 Also keep in mind to use the official documentation on how to use plugins. 
 
