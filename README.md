@@ -13,6 +13,11 @@ CHAT_MESSAGES_ENABLED=True
 TELEGRAM_API_KEY=your-telegram-bot-token
 TELEGRAM_CHAT_ID=your-telegram-bot-chat-id
 
+ALLOWLISTED_PLUGINS=AutoGPTTelegram
+CHAT_MESSAGES_ENABLED=True
+within your .env file.
+Also keep in mind to use the official documentation on how to use plugins. 
+
 to obtain your chat id, send a message to your bot and then use the following command:
 
 curl https://api.telegram.org/bot{your-telegram-bot-token}/getUpdates
