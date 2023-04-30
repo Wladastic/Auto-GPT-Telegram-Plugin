@@ -1,5 +1,6 @@
 """Telegram controller bot integration using python-telegram-bot."""
 import os
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, TypedDict, TypeVar
 
@@ -17,6 +18,11 @@ with open(str(Path(os.getcwd()) / ".env"), 'r') as fp:
 class Message(TypedDict):
     role: str
     content: str
+
+
+def remove_color_codes(s: str) -> str:
+    ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+    return ansi_escape.sub("", s)
 
 
 class AutoGPTTelegram(AutoGPTPluginTemplate):
@@ -246,6 +252,10 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
         return True
 
     def user_input(self, user_input: str) -> str:
+        user_input = remove_color_codes(user_input)
+        # if the user_input is too long, shorten it
+        if len(user_input) > 300:
+            user_input = user_input[:300] + "..."
         return self.telegram_utils.ask_user(self.telegram_utils, prompt=user_input)
 
     def can_handle_report(self) -> bool:
@@ -257,4 +267,8 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
         return True
 
     def report(self, message: str) -> None:
+        message = remove_color_codes(message)
+        # if the message is too long, shorten it
+        if len(message) > 300:
+            message = message[:300] + "..."
         self.telegram_utils.send_message(self.telegram_utils, message=message)
