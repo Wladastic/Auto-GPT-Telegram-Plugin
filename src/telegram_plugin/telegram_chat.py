@@ -3,6 +3,7 @@ import traceback
 
 from telegram import Bot, Update
 from telegram.ext import CallbackContext
+from telegram.error import TimedOut, BadRequest
 
 response_queue = ""
 
@@ -185,7 +186,11 @@ class TelegramUtils():
             loop = asyncio.get_running_loop()
         except RuntimeError:  # 'RuntimeError: There is no current event loop...'
             loop = None
-        if loop and loop.is_running():
-            return loop.create_task(self.ask_user_async(self, prompt=prompt))
-        else:
-            return asyncio.run(self.ask_user_async(self, prompt=prompt))
+        try:
+            if loop and loop.is_running():
+                return loop.create_task(self.ask_user_async(self, prompt=prompt))
+            else:
+                return asyncio.run(self.ask_user_async(self, prompt=prompt))
+        except TimedOut:
+            print("Telegram timeout error, trying again...")
+            return self.ask_user(self, prompt=prompt)
