@@ -1,3 +1,8 @@
+## Disclaimer!
+As many people keep creating issues:
+do not run "pip install telegram"
+it is not meantioned anywhere!
+
 ## Telegram Plugin for Auto-GPT
 
 A smoothly working Telegram bot that gives you all the messages you would normally get through the Terminal.
