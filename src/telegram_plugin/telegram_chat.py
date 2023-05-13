@@ -2,13 +2,13 @@ import asyncio
 import traceback
 
 from telegram import Bot, Update
+from telegram.error import TimedOut
 from telegram.ext import CallbackContext
-from telegram.error import TimedOut, BadRequest
 
 response_queue = ""
 
 
-class TelegramUtils():
+class TelegramUtils:
     def __init__(self, api_key: str = None, chat_id: str = None):
         self.api_key = api_key
         self.chat_id = chat_id
@@ -118,12 +118,12 @@ class TelegramUtils():
         if response_queue == "/start":
             response_queue = await self.ask_user(
                 self,
-                prompt="I am already here... \n Please use /stop to stop me first."
+                prompt="I am already here... \n Please use /stop to stop me first.",
             )
         if response_queue == "/help":
             response_queue = await self.ask_user(
                 self,
-                prompt="You can use /stop to stop me \n and /start to start me again."
+                prompt="You can use /stop to stop me \n and /start to start me again.",
             )
 
         if response_queue == "/stop":

@@ -1,7 +1,6 @@
 """Telegram controller bot integration using python-telegram-bot."""
 import os
 import re
-import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, TypedDict, TypeVar
 
@@ -12,7 +11,7 @@ from .telegram_chat import TelegramUtils
 
 PromptGenerator = TypeVar("PromptGenerator")
 
-with open(str(Path(os.getcwd()) / ".env"), 'r') as fp:
+with open(str(Path(os.getcwd()) / ".env"), "r") as fp:
     load_dotenv(stream=fp)
 
 
@@ -35,10 +34,14 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
         super().__init__()
         self._name = "Auto-GPT-Telegram"
         self._version = "0.1.0"
-        self._description = "This integrates a Telegram chat bot with your autogpt instance."
+        self._description = (
+            "This integrates a Telegram chat bot with your autogpt instance."
+        )
         self.telegram_api_key = os.getenv("TELEGRAM_API_KEY")
         self.telegram_chat_id = os.getenv("TELEGRAM_CHAT_ID")
-        self.telegram_utils = TelegramUtils(chat_id=self.telegram_chat_id, api_key=self.telegram_api_key)
+        self.telegram_utils = TelegramUtils(
+            chat_id=self.telegram_chat_id, api_key=self.telegram_api_key
+        )
 
     def can_handle_on_response(self) -> bool:
         """This method is called to check that the plugin can
