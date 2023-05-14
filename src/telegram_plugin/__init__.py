@@ -1,7 +1,6 @@
 """Telegram controller bot integration using python-telegram-bot."""
 import os
 import re
-import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, TypedDict, TypeVar
 
