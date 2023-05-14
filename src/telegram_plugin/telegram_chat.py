@@ -74,7 +74,6 @@ class TelegramUtils():
             ]
         )
 
-    @staticmethod
     def send_message(self, message):
         try:
             loop = asyncio.get_running_loop()
@@ -110,7 +109,7 @@ class TelegramUtils():
         # await delete_old_messages()
 
         print("Asking user: " + question)
-        self.send_message(self, message=question)
+        self.send_message(message=question)
 
         print("Waiting for response on Telegram chat...")
         await self._poll_updates(self)
@@ -127,7 +126,7 @@ class TelegramUtils():
             )
 
         if response_queue == "/stop":
-            self.send_message(self, "Stopping Auto-GPT now!")
+            self.send_message("Stopping Auto-GPT now!")
             exit(0)
         elif response_queue == "/yes":
             response_text = "yes"
@@ -179,7 +178,6 @@ class TelegramUtils():
 
             await asyncio.sleep(1)
 
-    @staticmethod
     def ask_user(self, prompt):
         print("Asking user: " + prompt)
         try:

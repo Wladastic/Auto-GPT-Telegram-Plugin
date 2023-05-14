@@ -12,7 +12,7 @@ from .telegram_chat import TelegramUtils
 
 PromptGenerator = TypeVar("PromptGenerator")
 
-with open(str(Path(os.getcwd()) / ".env"), 'r') as fp:
+with open(str(Path(os.getcwd()) / ".env"), "r") as fp:
     load_dotenv(stream=fp)
 
 
@@ -35,10 +35,14 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
         super().__init__()
         self._name = "Auto-GPT-Telegram"
         self._version = "0.1.0"
-        self._description = "This integrates a Telegram chat bot with your autogpt instance."
+        self._description = (
+            "This integrates a Telegram chat bot with your autogpt instance."
+        )
         self.telegram_api_key = os.getenv("TELEGRAM_API_KEY")
         self.telegram_chat_id = os.getenv("TELEGRAM_CHAT_ID")
-        self.telegram_utils = TelegramUtils(chat_id=self.telegram_chat_id, api_key=self.telegram_api_key)
+        self.telegram_utils = TelegramUtils(
+            chat_id=self.telegram_chat_id, api_key=self.telegram_api_key
+        )
 
     def can_handle_on_response(self) -> bool:
         """This method is called to check that the plugin can
@@ -58,7 +62,7 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
 
         Returns:
             bool: True if the plugin can handle the post_prompt method."""
-        return False
+        return True
 
     def post_prompt(self, prompt: PromptGenerator) -> PromptGenerator:
         """This method is called just after the generate_prompt is called,
@@ -70,7 +74,19 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
         Returns:
             PromptGenerator: The prompt generator.
         """
-        pass
+        prompt.add_command(
+            "send_reporting_message",
+            "Send message to reporting chat without waiting for response",
+            {"message": "<message>"},
+            self.telegram_utils.send_message,
+        )
+        prompt.add_command(
+            "ask_user",
+            "Ask user a question and wait for response",
+            {"prompt": "<message>"},
+            self.telegram_utils.ask_user,
+        )
+        return prompt
 
     def can_handle_on_planning(self) -> bool:
         """This method is called to check that the plugin can
@@ -257,7 +273,7 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
         # if the user_input is too long, shorten it
         if len(user_input) > 2000:
             user_input = user_input[:2000] + "..."
-        return self.telegram_utils.ask_user(self.telegram_utils, prompt=user_input)
+        return self.telegram_utils.ask_user(prompt=user_input)
 
     def can_handle_report(self) -> bool:
         """This method is called to check that the plugin can
@@ -272,4 +288,4 @@ class AutoGPTTelegram(AutoGPTPluginTemplate):
         # if the message is too long, shorten it
         if len(message) > 2000:
             message = message[:2000] + "..."
-        self.telegram_utils.send_message(self.telegram_utils, message=message)
+        self.telegram_utils.send_message(message=message)
