@@ -1,7 +1,20 @@
 ## Disclaimer!
-As many people keep creating issues:
-do not run "pip install telegram"
-it is not meantioned anywhere!
+
+
+This plugin became a first party plugin and can now be found at the official plugin repo:
+https://github.com/Significant-Gravitas/Auto-GPT-Plugins
+
+
+
+
+
+Needless to say, I will still work on this plugin, but will try to prioritize the first party one at https://github.com/Significant-Gravitas/Auto-GPT-Plugins
+
+Thank you all for using, feel free to apply PR's there! :)
+
+
+
+
 
 ## Telegram Plugin for Auto-GPT
 
