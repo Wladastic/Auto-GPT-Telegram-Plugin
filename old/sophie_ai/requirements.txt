@@ -1,0 +1,8 @@
+tensorflow==2.6.0
+transformers==4.11.3
+python-telegram-bot==13.7
+silero-models==0.1.1
+torchaudio==0.10.0
+torch==1.10.0
+openai==0.27.0
+whisper==0.1.0
